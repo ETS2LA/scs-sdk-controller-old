@@ -1,0 +1,3 @@
+﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  input_semantical.cpp
+  input_semantical.vcxproj -> C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\Debug\input_semantical.dll
