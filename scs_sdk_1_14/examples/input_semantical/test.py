@@ -1,60 +1,36 @@
-import socket
+import mmap
+import os
 import struct
 import time
 
-def send_data(conn, steering, aforward, abackward):
-    # Pack the floats into a binary format
-    packed_data = struct.pack('fff', steering, aforward, abackward)
-    
-    # Send the packed data
-    conn.sendall(packed_data)
+# Open the file
+mmName = r"Local\SCSControls"
 
-# Create a socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Set timeout mode to non blocking
-s.setblocking(0)
-
-# Bind the socket to a specific address and port
-s.bind(('localhost', 12345))
-
-print('Socket server bound to port 12345')
-
-# Listen for incoming connections
-s.listen(1)
-
-print('Socket server started')
-
-import time
+# Memory map the file
+print("Waiting for memory map from game...")
+buf = None
+while buf is None:
+    buf = mmap.mmap(0, 3 * 4, "Local\SCSControls")  # 3 floats, 4 bytes each
+    time.sleep(0.1)
+print("Memory map received!")
 
 steering = -1
-counter = 0
-while True:
-    # Accept a connection
-    try:
-        conn, addr = s.accept()
-    except:
-        continue
-    
-    print('Connected by', addr)
-    
-    try:
-        while True:
-            startTime = time.time()
-            try:
-                send_data(conn, steering, 0, 0)
-            except: 
-                continue
-            endTime = time.time()
-            steering += (endTime - startTime)
-            if steering > 1:
-                steering = -1
-            
-            if counter % 10 == 0:
-                print(steering, end='\r')
-                counter = 0
-            else:
-                counter += 1
-            # time.sleep(0.1)
-    except:
-        print('Connection closed')
-        conn.close()
+didIncrease = False
+try:
+    while True:
+        # Write three floats to memory
+        buf[:] = struct.pack('fff', steering, 0.0, 0.0)
+
+        # Sleep for a while to prevent high CPU usage
+        time.sleep(0.01)
+        if didIncrease:
+            steering = steering - 0.005
+        else:
+            steering = steering + 0.005
+        if steering > 1:
+            didIncrease = True
+        elif steering < -1:
+            didIncrease = False
+        print(steering, end='\r')
+except:
+    pass

@@ -1,11 +1,7 @@
 ﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
   input_semantical.cpp
-C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(13,1): warning C4005: 'WINVER': macro redefinition
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\sdkddkver.h(245): message : see previous definition of 'WINVER'
-C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(14,1): warning C4005: '_WIN32_WINNT': macro redefinition
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\sdkddkver.h(224): message : see previous definition of '_WIN32_WINNT'
-C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(40,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(105,34): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(147,18): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(33,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(146,18): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(189,21): warning C4018: '<': signed/unsigned mismatch
      Creating library C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\x64\Debug\input_semantical.lib and object C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\x64\Debug\input_semantical.exp
   input_semantical.vcxproj -> C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\x64\Debug\input_semantical.dll

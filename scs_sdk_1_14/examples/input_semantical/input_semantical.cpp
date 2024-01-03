@@ -5,9 +5,6 @@
  */
 
 // Windows stuff.
-// Socket to python
-#include <WinSock2.h>
-#pragma comment(lib, "ws2_32.lib")
 
 #ifdef _WIN32
 #  define WINVER 0x0500
@@ -21,14 +18,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <time.h>
+#include <array>
+#include <sstream>
 const time_t startTime = time(NULL);
-
-// SDK
-#include "scssdk_input.h"
-#include "eurotrucks2/scssdk_eut2.h"
-#include "eurotrucks2/scssdk_input_eut2.h"
-#include "amtrucks/scssdk_ats.h"
-#include "amtrucks/scssdk_input_ats.h"
 
 // Management of the log file.
 FILE* log_file = NULL;
@@ -80,69 +72,74 @@ void log_line(const char* const text, ...)
 	va_end(args);
 }
 
-WSADATA wsaData;
-SOCKET ConnectSocket = INVALID_SOCKET;
-struct sockaddr_in clientService;
+// SDK
+#include "scssdk_input.h"
+#include "eurotrucks2/scssdk_eut2.h"
+#include "eurotrucks2/scssdk_input_eut2.h"
+#include "amtrucks/scssdk_ats.h"
+#include "amtrucks/scssdk_input_ats.h"
 
+// Shared Memory
+const wchar_t* memname = L"Local\\SCSControls";
+const size_t size = 3 * sizeof(float);
+HANDLE hMapFile;
 
-int initialize_socket() {
-	// Initialize Winsock
-	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != NO_ERROR) {
-		log_line("WSAStartup failed");
-		return 1;
+// Function to initialize shared memory
+void initialize_mem() {
+	hMapFile = CreateFileMapping(
+		INVALID_HANDLE_VALUE,    // use paging file
+		NULL,                    // default security
+		PAGE_READWRITE,          // read/write access
+		0,                       // maximum object size (high-order DWORD)
+		size,                    // maximum object size (low-order DWORD)
+		memname);                // name of mapping object
+
+	if (hMapFile == NULL) {
+		DWORD dw = GetLastError();
+		std::stringstream ss;
+		ss << dw;
+		std::string message = "Failed to create file mapping. Error code: " + ss.str();
+		log_line(message.c_str());
+		return;
 	}
 
-	// Create a socket for connecting to server
-	ConnectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (ConnectSocket == INVALID_SOCKET) {
-		log_line("Socket error");
-		WSACleanup();
-		return 1;
+	void* pBuf = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, size);
+
+	if (pBuf == NULL) {
+		log_line("Failed to map view of file.");
+		CloseHandle(hMapFile);
+		hMapFile = NULL;
+		return;
 	}
 
-	// The sockaddr_in structure specifies the address family,
-	// IP address, and port of the server to be connected to.
-	clientService.sin_family = AF_INET;
-	clientService.sin_addr.s_addr = inet_addr("127.0.0.1");
-	clientService.sin_port = htons(12345);
+	float data[3] = { 0.0, 0.0, 0.0 };
+	memcpy(pBuf, data, size);
 
-	// Connect to server.
-	iResult = connect(ConnectSocket, (SOCKADDR*)&clientService, sizeof(clientService));
-	if (iResult == SOCKET_ERROR) {
-		closesocket(ConnectSocket);
-		ConnectSocket = INVALID_SOCKET;
-		log_line("Invalid socket");
-	}
-	return 0;
+	UnmapViewOfFile(pBuf);
+
+	log_line("Successfully opened shared mem file.");
 }
 
-int get_data(float* values) {
-	// Receive data from the server
-	int iResult = recv(ConnectSocket, (char*)values, sizeof(float) * 3, MSG_WAITALL);
-	if (iResult > 0) {
-		//std::cout << "Received: " << values[0] << ", " << values[1] << ", " << values[2] << std::endl;
-	}
-	else if (iResult == 0) {
-		//std::cout << "Connection closed" << std::endl;
-	}
-	else {
-		//std::cout << "recv failed with error: " << WSAGetLastError() << std::endl;
+// Function to read shared memory
+std::array<float, 3> read_mem() {
+	if (hMapFile == NULL) {
+		log_line("Shared mem file not open.");
+		return std::array<float, 3>{};
 	}
 
-	return iResult;
-}
+	void* pBuf = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, size);
 
-void close_socket() {
-	// cleanup
-	closesocket(ConnectSocket);
-	WSACleanup();
+	std::array<float, 3> data;
+	memcpy(data.data(), pBuf, size);
+
+	UnmapViewOfFile(pBuf);
+	return data;
 }
 
 #define UNUSED(x)
 
 int inputNumber = 0;
-scs_float_t values[3];
+scs_float_t inputValues[3];
 scs_input_device_t device_info;
 SCSAPI_RESULT input_event_callback(scs_input_event_t* const event_info, const scs_u32_t flags, const scs_context_t UNUSED(context))
 {
@@ -158,18 +155,7 @@ SCSAPI_RESULT input_event_callback(scs_input_event_t* const event_info, const sc
 	if (SCS_INPUT_EVENT_CALLBACK_FLAG_first_in_frame == 1 && inputNumber == 0) {
 		inputNumber = 0;
 
-		// Get data from socket
-		int iResult = get_data(values);
-		if (iResult <= 0) {
-			log_line("Update Failed");
-			values[0] = 0.0f;
-			values[1] = 0.0f;
-			values[2] = 0.0f;
-		}
-		else {
-			log_line("Update Successfull");
-		}
-
+		std::array<float, 3> values = read_mem();
 
 		// Check that none of the values are too high or too low.
 		if (values[0] > 1) 
@@ -200,6 +186,10 @@ SCSAPI_RESULT input_event_callback(scs_input_event_t* const event_info, const sc
 		char buffer[64];
 		int ret = snprintf(buffer, sizeof buffer, "%f", values[0]);
 
+		for (int i = 0; i < device_info.input_count; i++) {
+			inputValues[i] = values[i];
+		}
+
 		if (ret < 0) {
 			return EXIT_FAILURE;
 		}
@@ -207,21 +197,22 @@ SCSAPI_RESULT input_event_callback(scs_input_event_t* const event_info, const sc
 		log_line(buffer);
 	}
 
-	log_line("Event");
-
 	event_info->input_index = inputNumber;
 
 	if (inputNumber == 0)
 	{
-		event_info->value_float.value = values[0];
+		event_info->value_float.value = inputValues[0];
+		log_line("Updated steering");
 	}
 	if (inputNumber == 1)
 	{
-		event_info->value_float.value = values[1];
+		event_info->value_float.value = inputValues[1];
+		log_line("Updated acceleration");
 	}
 	if (inputNumber == 2)
 	{
-		event_info->value_float.value = values[2];
+		event_info->value_float.value = inputValues[2];
+		log_line("Updated braking");
 	}
 
 	inputNumber++;
@@ -243,14 +234,7 @@ SCSAPI_RESULT scs_input_init(const scs_u32_t version, const scs_input_init_param
 		return SCS_RESULT_unsupported;
 	}
 
-	int socketCode = initialize_socket();
-
-	if(socketCode != 0) {
-		return SCS_RESULT_generic_error;
-	}
-	else {
-		log_line("Connected to socket successfully.");
-	}
+	initialize_mem();
 
 	const scs_input_init_params_v100_t *const version_params = static_cast<const scs_input_init_params_v100_t *>(params);
 
