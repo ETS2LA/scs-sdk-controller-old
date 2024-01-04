@@ -42,7 +42,6 @@ boolCount = 15
 boolSize = 1
 size = floatCount * floatSize + boolCount * boolSize
 
-# tryExceptDefault will return the default value if the key is not found
 def plugin(data): # Called each frame
     buf = None
     try:
