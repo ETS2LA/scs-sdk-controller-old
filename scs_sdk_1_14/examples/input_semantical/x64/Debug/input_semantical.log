@@ -2,6 +2,5 @@
   input_semantical.cpp
 C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(33,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(165,18): warning C4018: '>=': signed/unsigned mismatch
-C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\input_semantical.cpp(208,40): warning C4805: '==': unsafe mix of type 'scs_u8_t' and type 'bool' in operation
      Creating library C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\x64\Debug\input_semantical.lib and object C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\x64\Debug\input_semantical.exp
   input_semantical.vcxproj -> C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input_semantical\x64\Debug\input_semantical.dll

@@ -148,7 +148,7 @@ std::pair<std::array<float, axisCount>, std::array<bool, buttonCount>> read_mem(
 	std::array<bool, buttonCount> boolData;
 
 	memcpy(floatData.data(), pBuf, axisSize);
-	memcpy(boolData.data(), static_cast<char*>(pBuf) + size, buttonSize);
+	memcpy(boolData.data(), static_cast<char*>(pBuf) + axisSize, buttonSize);
 
 	UnmapViewOfFile(pBuf);
 	return std::make_pair(floatData, boolData);
@@ -205,12 +205,8 @@ SCSAPI_RESULT input_event_callback(scs_input_event_t* const event_info, const sc
 	}
 	else
 	{
-		// TODO: This code is not running, well atleast the value is not true.
-		if (inputBools[inputNumber].value == true)
-		{
-			log_line("Button %d pressed", inputNumber);
-		}
-		event_info->value_bool.value = inputBools[inputNumber].value;
+		// We need to remove the axis count from the input number to get the correct index for the bools
+		event_info->value_bool.value = inputBools[inputNumber - axisCount].value;
 	}
 
 	inputNumber++;
