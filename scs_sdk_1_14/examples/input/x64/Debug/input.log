@@ -1,5 +1,0 @@
-﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  input.cpp
-C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input\input.cpp(67,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-     Creating library C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input\x64\Debug\input.lib and object C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input\x64\Debug\input.exp
-  input.vcxproj -> C:\Users\Tuomas\Documents\GitHub\scs-sdk-controller\scs_sdk_1_14\examples\input\x64\Debug\input.dll
