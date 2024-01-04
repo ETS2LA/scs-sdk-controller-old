@@ -32,7 +32,7 @@ Cycle Zoom (map?),18,bool,cycl_zoom    (This one is provided, but doesn't seem t
 
 If you need additional controls then please contact me on github, discord @Tumppi066 or email me at contact@tumppi066.fi
 
-Example python code to control from [my other program]() (some code is cut out for clarity):
+Example python code to control from [my other program](https://github.com/Tumppi066/Euro-Truck-Simulator-2-Lane-Assist) (some code is cut out for clarity):
 ```python
 import mmap
 mmName = r"Local\SCSControls"
