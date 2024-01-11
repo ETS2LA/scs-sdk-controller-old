@@ -81,7 +81,7 @@ void log_line(const char* const text, ...)
 
 // Shared Memory
 const int axisCount = 4;
-const int buttonCount = 15;
+const int buttonCount = 38;
 const wchar_t* memname = L"Local\\SCSControls";
 const size_t buttonSize = buttonCount * sizeof(bool);
 const size_t axisSize = axisCount * sizeof(float);
@@ -157,8 +157,8 @@ std::pair<std::array<float, axisCount>, std::array<bool, buttonCount>> read_mem(
 #define UNUSED(x)
 
 int inputNumber = 0;
-scs_float_t inputValues[4];
-scs_value_bool_t inputBools[15];
+scs_float_t inputValues[axisCount];
+scs_value_bool_t inputBools[buttonCount];
 scs_input_device_t device_info;
 SCSAPI_RESULT input_event_callback(scs_input_event_t* const event_info, const scs_u32_t flags, const scs_context_t UNUSED(context))
 {
@@ -262,6 +262,29 @@ SCSAPI_RESULT scs_input_init(const scs_u32_t version, const scs_input_init_param
 	// Drive(Gear), 16, bool, drive
 	// Reverse(Gear), 17, bool, reverse
 	// Cycle Zoom(map ? ), 18, bool, cycl_zoom
+	// Reset Trip, 19, bool, tripreset
+	// Rear Wipers, 20, bool, wipersback
+	// Wiper LVL 0, 21, bool, wipers0
+	// Wiper LVL 1, 22, bool, wipers1
+	// Wiper LVL 2, 23, bool, wipers2
+	// Wiper LVL 3, 24, bool, wipers3
+	// Wiper LVL 4, 25, bool, wipers4
+	// Horn, 26, bool, horn
+	// Airhorn, 27, bool, airhorn
+	// Light Horn, 28, bool, lighthorn
+	// Camera 1, 29, bool, cam1
+	// Camera 2, 30, bool, cam2
+	// Camera 3, 31, bool, cam3
+	// Camera 4, 32, bool, cam4
+	// Camera 5, 33, bool, cam5
+	// Camera 6, 34, bool, cam6
+	// Camera 7, 35, bool, cam7
+	// Camera 8, 36, bool, cam8
+	// Zoom Map In, 37, bool, mapzoom_in
+	// Zoom Map Out, 38, bool, mapzoom_out
+	// ACC Mode, 39, bool, accmode
+	// Show Mirrors, 40, bool, showmirrors
+	// Hazard Lights, 41, bool, flasher4way
 
 	const scs_input_device_input_t inputs[] = { 
 		{"steering", "ETS2LA Steering", SCS_VALUE_TYPE_float }, 
@@ -283,6 +306,29 @@ SCSAPI_RESULT scs_input_init(const scs_u32_t version, const scs_input_init_param
 		{"drive", "ETS2LA Drive", SCS_VALUE_TYPE_bool },
 		{"reverse", "ETS2LA Reverse", SCS_VALUE_TYPE_bool },
 		{"cycl_zoom", "ETS2LA Cycle Zoom", SCS_VALUE_TYPE_bool },	
+		{"tripreset", "ETS2LA Reset Trip", SCS_VALUE_TYPE_bool },
+		{"wipersback", "ETS2LA Rear Wipers", SCS_VALUE_TYPE_bool },
+		{"wipers0", "ETS2LA Wiper LVL 0", SCS_VALUE_TYPE_bool },
+		{"wipers1", "ETS2LA Wiper LVL 1", SCS_VALUE_TYPE_bool },
+		{"wipers2", "ETS2LA Wiper LVL 2", SCS_VALUE_TYPE_bool },
+		{"wipers3", "ETS2LA Wiper LVL 3", SCS_VALUE_TYPE_bool },
+		{"wipers4", "ETS2LA Wiper LVL 4", SCS_VALUE_TYPE_bool },
+		{"horn", "ETS2LA Horn", SCS_VALUE_TYPE_bool },
+		{"airhorn", "ETS2LA Airhorn", SCS_VALUE_TYPE_bool },
+		{"lighthorn", "ETS2LA Light Horn", SCS_VALUE_TYPE_bool },
+		{"cam1", "ETS2LA Camera 1", SCS_VALUE_TYPE_bool },
+		{"cam2", "ETS2LA Camera 2", SCS_VALUE_TYPE_bool },
+		{"cam3", "ETS2LA Camera 3", SCS_VALUE_TYPE_bool },
+		{"cam4", "ETS2LA Camera 4", SCS_VALUE_TYPE_bool },
+		{"cam5", "ETS2LA Camera 5", SCS_VALUE_TYPE_bool },
+		{"cam6", "ETS2LA Camera 6", SCS_VALUE_TYPE_bool },
+		{"cam7", "ETS2LA Camera 7", SCS_VALUE_TYPE_bool },
+		{"cam8", "ETS2LA Camera 8", SCS_VALUE_TYPE_bool },
+		{"mapzoom_in", "ETS2LA Zoom Map In", SCS_VALUE_TYPE_bool },
+		{"mapzoom_out", "ETS2LA Zoom Map Out", SCS_VALUE_TYPE_bool },
+		{"accmode", "ETS2LA ACC Mode", SCS_VALUE_TYPE_bool },
+		{"showmirrors", "ETS2LA Show Mirrors", SCS_VALUE_TYPE_bool },
+		{"flasher4way", "ETS2LA Hazard Lights", SCS_VALUE_TYPE_bool }
 	};
 	device_info.input_count = axisCount + buttonCount;
 	device_info.inputs = inputs;
