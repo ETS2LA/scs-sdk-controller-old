@@ -62,7 +62,7 @@ import mmap
 mmName = r"Local\SCSControls"
 floatCount = 4
 floatSize = 4
-boolCount = 15
+boolCount = 38
 boolSize = 1
 size = floatCount * floatSize + boolCount * boolSize
 
@@ -79,14 +79,16 @@ def plugin(data): # Called each frame
     # Code to get the values from the data variable
     # ...
     
-    # Write three floats to memory
     # ffff = 4 floats
-    # 15? = 15 bools
+    # 38? = 38 bools
     # Values have to be added in the same order!
-    buf[:] = struct.pack('ffff15?', steering, acceleration, brake, clutch,
+    buf[:] = struct.pack('ffff38?', steering, acceleration, brake, clutch,
                          pause, parkingbrake, wipers, cruiectrl, cruiectrlinc, cruiectrldec, 
                          cruiectrlres, light, hblight, lblinker, rblinker, quickpark, drive, 
-                         reverse, cycl_zoom)
+                         reverse, cycl_zoom, tripreset, wipersback, wipers0, wipers1, wipers2,
+                         wipers3, wipers4, horn, airhorn, lighthorn, cam1, cam2, cam3, cam4,
+                         cam5, cam6, cam7, cam8, mapzoom_in, mapzoom_out, accmode, showmirrors,
+                         hazards)
 
     return data
 ```
