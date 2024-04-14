@@ -1,3 +1,5 @@
+# ARCHIVED
+New version available at [the github repo](https://github.com/ETS2LA/scs-sdk-controller).
 # scs-sdk-controller
 This dll file is built on top of the SCS SDK that is provided by SCS Software for Euro Truck Simulator 2 and American Truck Simulator. It is meant to be used by other programs to control the game.
 
